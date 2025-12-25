@@ -1,11 +1,11 @@
 import { motion } from 'framer-motion';
 import { Home, Search, ClipboardList, User } from 'lucide-react';
-import { useState } from 'react';
+import { useNavigationStore, PageId } from '@/store/navigationStore';
 
 interface NavItem {
   icon: React.ElementType;
   label: string;
-  id: string;
+  id: PageId;
 }
 
 const navItems: NavItem[] = [
@@ -16,7 +16,7 @@ const navItems: NavItem[] = [
 ];
 
 export const MobileNav = () => {
-  const [activeTab, setActiveTab] = useState('home');
+  const { currentPage, setCurrentPage } = useNavigationStore();
 
   return (
     <motion.nav
@@ -28,19 +28,18 @@ export const MobileNav = () => {
       <div className="flex items-center justify-around py-2 px-4">
         {navItems.map((item) => {
           const Icon = item.icon;
-          const isActive = activeTab === item.id;
+          const isActive = currentPage === item.id;
 
           return (
             <motion.button
               key={item.id}
-              onClick={() => setActiveTab(item.id)}
+              onClick={() => setCurrentPage(item.id)}
               className="relative flex flex-col items-center justify-center touch-target px-4 py-2"
               whileTap={{ scale: 0.9 }}
             >
-              {/* Active indicator */}
               {isActive && (
                 <motion.div
-                  layoutId="activeTab"
+                  layoutId="mobileActiveTab"
                   className="absolute inset-0 bg-accent rounded-2xl"
                   transition={{ type: 'spring', stiffness: 400, damping: 30 }}
                 />
@@ -73,14 +72,6 @@ export const MobileNav = () => {
               >
                 {item.label}
               </motion.span>
-
-              {/* Tap feedback ripple */}
-              <motion.div
-                initial={{ scale: 0, opacity: 0.5 }}
-                whileTap={{ scale: 2, opacity: 0 }}
-                transition={{ duration: 0.4 }}
-                className="absolute inset-0 bg-primary rounded-full pointer-events-none"
-              />
             </motion.button>
           );
         })}

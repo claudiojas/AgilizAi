@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useRef, useCallback, useMemo } from 'react';
 import { motion, useMotionValue, useTransform, animate, PanInfo } from 'framer-motion';
 import { Utensils, Wine, Salad, Cake, Coffee, Pizza, Sandwich, IceCream } from 'lucide-react';
 
@@ -10,9 +10,9 @@ interface Category {
 }
 
 const categories: Category[] = [
-  { id: 'burgers', name: 'Lanches', icon: Sandwich, color: 'hsl(24, 100%, 45%)' },
+  { id: 'burgers', name: 'Lanches', icon: Sandwich, color: 'hsl(var(--primary))' },
   { id: 'pizzas', name: 'Pizzas', icon: Pizza, color: 'hsl(0, 80%, 55%)' },
-  { id: 'salads', name: 'Saladas', icon: Salad, color: 'hsl(122, 55%, 40%)' },
+  { id: 'salads', name: 'Saladas', icon: Salad, color: 'hsl(var(--secondary))' },
   { id: 'drinks', name: 'Bebidas', icon: Wine, color: 'hsl(200, 80%, 50%)' },
   { id: 'desserts', name: 'Sobremesas', icon: Cake, color: 'hsl(330, 70%, 55%)' },
   { id: 'coffee', name: 'Cafés', icon: Coffee, color: 'hsl(30, 60%, 35%)' },
@@ -28,42 +28,47 @@ interface SpinningPlateMenuProps {
 export const SpinningPlateMenu = ({ onCategoryChange, selectedCategory }: SpinningPlateMenuProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const rotation = useMotionValue(0);
-  const [isDragging, setIsDragging] = useState(false);
+  const velocityRef = useRef(0);
   
   const plateSize = 280;
   const iconRadius = 100;
   const angleStep = 360 / categories.length;
-  
-  // Calculate which category is at the top (selected position)
-  const getSelectedIndex = (rot: number) => {
+
+  // Memoized calculation for selected index
+  const getSelectedIndex = useCallback((rot: number) => {
     const normalizedRotation = ((rot % 360) + 360) % 360;
     const index = Math.round(normalizedRotation / angleStep) % categories.length;
     return (categories.length - index) % categories.length;
-  };
+  }, [angleStep]);
 
-  const handleDragEnd = (_: any, info: PanInfo) => {
-    setIsDragging(false);
-    
-    // Add inertia-like behavior
-    const velocity = info.velocity.x * 0.3;
+  const handleDrag = useCallback((_: any, info: PanInfo) => {
+    const sensitivity = 0.5;
+    const newRotation = rotation.get() + info.delta.x * sensitivity;
+    rotation.set(newRotation);
+    velocityRef.current = info.velocity.x;
+  }, [rotation]);
+
+  const handleDragEnd = useCallback(() => {
+    const velocity = velocityRef.current * 0.15;
     const currentRotation = rotation.get();
     const projectedRotation = currentRotation + velocity;
     
-    // Snap to nearest category
+    // Snap to nearest category with smooth spring physics
     const snappedRotation = Math.round(projectedRotation / angleStep) * angleStep;
     
     animate(rotation, snappedRotation, {
       type: 'spring',
-      stiffness: 200,
-      damping: 30,
+      stiffness: 150,
+      damping: 20,
+      mass: 0.8,
       onComplete: () => {
         const selectedIndex = getSelectedIndex(snappedRotation);
         onCategoryChange(categories[selectedIndex].id);
       },
     });
-  };
+  }, [rotation, angleStep, getSelectedIndex, onCategoryChange]);
 
-  const handleCategoryClick = (index: number) => {
+  const handleCategoryClick = useCallback((index: number) => {
     const currentRotation = rotation.get();
     const currentSelectedIndex = getSelectedIndex(currentRotation);
     const diff = (currentSelectedIndex - index + categories.length) % categories.length;
@@ -78,14 +83,31 @@ export const SpinningPlateMenu = ({ onCategoryChange, selectedCategory }: Spinni
         onCategoryChange(categories[index].id);
       },
     });
-  };
+  }, [rotation, getSelectedIndex, angleStep, onCategoryChange]);
 
-  // Background plate rotation
-  const plateRotation = useTransform(rotation, (r) => r);
+  // Memoized category rendering
+  const categoryIcons = useMemo(() => {
+    return categories.map((category, index) => {
+      const baseAngle = index * angleStep - 90;
+      return (
+        <CategoryIcon
+          key={category.id}
+          category={category}
+          index={index}
+          baseAngle={baseAngle}
+          rotation={rotation}
+          plateSize={plateSize}
+          iconRadius={iconRadius}
+          isSelected={selectedCategory === category.id}
+          onClick={() => handleCategoryClick(index)}
+        />
+      );
+    });
+  }, [selectedCategory, handleCategoryClick, rotation, angleStep]);
 
   return (
     <div className="relative w-full flex flex-col items-center py-4">
-      {/* Selection indicator - Arrow pointing down */}
+      {/* Selection indicator */}
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
@@ -97,92 +119,43 @@ export const SpinningPlateMenu = ({ onCategoryChange, selectedCategory }: Spinni
       {/* Plate Container */}
       <div 
         ref={containerRef}
-        className="relative"
+        className="relative touch-none"
         style={{ width: plateSize, height: plateSize }}
       >
-        {/* Background plate with texture */}
+        {/* Background plate */}
         <motion.div
-          style={{ rotate: plateRotation }}
-          className="absolute inset-0 rounded-full bg-gradient-to-br from-card via-card to-muted border-4 border-border shadow-medium"
+          style={{ rotate: rotation }}
+          className="absolute inset-0 rounded-full bg-gradient-to-br from-card via-card to-muted border-4 border-border shadow-medium will-change-transform"
         >
-          {/* Decorative rings */}
           <div className="absolute inset-4 rounded-full border-2 border-border/50" />
           <div className="absolute inset-8 rounded-full border border-border/30" />
           
-          {/* Slice lines */}
-          {categories.map((_, index) => {
-            const angle = index * angleStep;
-            return (
-              <div
-                key={`line-${index}`}
-                className="absolute top-1/2 left-1/2 w-1/2 h-px bg-border/40 origin-left"
-                style={{ transform: `rotate(${angle}deg)` }}
-              />
-            );
-          })}
+          {categories.map((_, index) => (
+            <div
+              key={`line-${index}`}
+              className="absolute top-1/2 left-1/2 w-1/2 h-px bg-border/40 origin-left"
+              style={{ transform: `rotate(${index * angleStep}deg)` }}
+            />
+          ))}
         </motion.div>
 
-        {/* Draggable overlay */}
+        {/* Drag overlay */}
         <motion.div
           drag="x"
           dragConstraints={{ left: 0, right: 0 }}
           dragElastic={0}
-          onDragStart={() => setIsDragging(true)}
-          onDrag={(_, info) => {
-            rotation.set(rotation.get() + info.delta.x * 0.5);
-          }}
+          dragMomentum={false}
+          onDrag={handleDrag}
           onDragEnd={handleDragEnd}
-          className="absolute inset-0 cursor-grab active:cursor-grabbing z-10"
+          className="absolute inset-0 cursor-grab active:cursor-grabbing z-10 rounded-full"
         />
 
         {/* Category Icons */}
-        {categories.map((category, index) => {
-          const angle = index * angleStep - 90; // Start from top
-          const radians = (angle * Math.PI) / 180;
-          const x = Math.cos(radians) * iconRadius;
-          const y = Math.sin(radians) * iconRadius;
-          const Icon = category.icon;
-          const isSelected = selectedCategory === category.id;
-
-          return (
-            <motion.div
-              key={category.id}
-              style={{
-                rotate: useTransform(rotation, (r) => -r + angle + 90),
-                x: useTransform(rotation, (r) => {
-                  const totalAngle = angle + r;
-                  const rad = (totalAngle * Math.PI) / 180;
-                  return Math.cos(rad) * iconRadius + plateSize / 2 - 28;
-                }),
-                y: useTransform(rotation, (r) => {
-                  const totalAngle = angle + r;
-                  const rad = (totalAngle * Math.PI) / 180;
-                  return Math.sin(rad) * iconRadius + plateSize / 2 - 28;
-                }),
-              }}
-              className="absolute w-14 h-14"
-            >
-              <motion.button
-                onClick={() => handleCategoryClick(index)}
-                whileTap={{ scale: 0.9 }}
-                className={`w-full h-full rounded-2xl flex items-center justify-center transition-all duration-300 ${
-                  isSelected
-                    ? 'bg-primary text-primary-foreground shadow-glow scale-110'
-                    : 'bg-card text-foreground shadow-soft hover:shadow-medium'
-                }`}
-                style={{
-                  backgroundColor: isSelected ? category.color : undefined,
-                }}
-              >
-                <Icon size={24} strokeWidth={isSelected ? 2.5 : 2} />
-              </motion.button>
-            </motion.div>
-          );
-        })}
+        {categoryIcons}
 
         {/* Center hub */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 rounded-full bg-gradient-to-br from-primary to-primary-dark flex items-center justify-center shadow-glow z-5">
-          <span className="text-primary-foreground font-bold text-xs text-center leading-tight">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 rounded-full bg-gradient-to-br from-primary to-primary-dark flex items-center justify-center shadow-glow z-[5]">
+          <span className="text-primary-foreground font-bold text-xs text-center leading-tight select-none">
             GIRE<br/>AQUI
           </span>
         </div>
@@ -193,6 +166,7 @@ export const SpinningPlateMenu = ({ onCategoryChange, selectedCategory }: Spinni
         key={selectedCategory}
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.2 }}
         className="mt-4 text-center"
       >
         <h2 className="text-2xl font-bold text-foreground">
@@ -203,5 +177,69 @@ export const SpinningPlateMenu = ({ onCategoryChange, selectedCategory }: Spinni
         </p>
       </motion.div>
     </div>
+  );
+};
+
+// Separate component for better performance
+interface CategoryIconProps {
+  category: Category;
+  index: number;
+  baseAngle: number;
+  rotation: ReturnType<typeof useMotionValue<number>>;
+  plateSize: number;
+  iconRadius: number;
+  isSelected: boolean;
+  onClick: () => void;
+}
+
+const CategoryIcon = ({ 
+  category, 
+  baseAngle, 
+  rotation, 
+  plateSize, 
+  iconRadius, 
+  isSelected, 
+  onClick 
+}: CategoryIconProps) => {
+  const Icon = category.icon;
+  const iconSize = 56;
+  const halfIcon = iconSize / 2;
+
+  // Transform values with GPU acceleration
+  const x = useTransform(rotation, (r) => {
+    const totalAngle = baseAngle + r;
+    const rad = (totalAngle * Math.PI) / 180;
+    return Math.cos(rad) * iconRadius + plateSize / 2 - halfIcon;
+  });
+
+  const y = useTransform(rotation, (r) => {
+    const totalAngle = baseAngle + r;
+    const rad = (totalAngle * Math.PI) / 180;
+    return Math.sin(rad) * iconRadius + plateSize / 2 - halfIcon;
+  });
+
+  // Keep icons upright
+  const iconRotate = useTransform(rotation, (r) => -r);
+
+  return (
+    <motion.div
+      style={{ x, y, rotate: iconRotate }}
+      className="absolute will-change-transform"
+    >
+      <motion.button
+        onClick={onClick}
+        whileTap={{ scale: 0.9 }}
+        className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-200 ${
+          isSelected
+            ? 'text-primary-foreground shadow-glow scale-110'
+            : 'bg-card text-foreground shadow-soft hover:shadow-medium'
+        }`}
+        style={{
+          backgroundColor: isSelected ? category.color : undefined,
+        }}
+      >
+        <Icon size={24} strokeWidth={isSelected ? 2.5 : 2} />
+      </motion.button>
+    </motion.div>
   );
 };
