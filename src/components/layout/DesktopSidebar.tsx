@@ -1,11 +1,11 @@
 import { motion } from 'framer-motion';
 import { Home, Search, ClipboardList, User, ChefHat, Settings, HelpCircle } from 'lucide-react';
-import { useState } from 'react';
+import { useNavigationStore, PageId } from '@/store/navigationStore';
 
 interface NavItem {
   icon: React.ElementType;
   label: string;
-  id: string;
+  id: PageId;
 }
 
 const mainNavItems: NavItem[] = [
@@ -16,20 +16,18 @@ const mainNavItems: NavItem[] = [
 
 const secondaryNavItems: NavItem[] = [
   { icon: User, label: 'Minha Conta', id: 'profile' },
-  { icon: Settings, label: 'Configurações', id: 'settings' },
-  { icon: HelpCircle, label: 'Ajuda', id: 'help' },
 ];
 
 export const DesktopSidebar = () => {
-  const [activeTab, setActiveTab] = useState('home');
+  const { currentPage, setCurrentPage } = useNavigationStore();
 
   const NavButton = ({ item }: { item: NavItem }) => {
     const Icon = item.icon;
-    const isActive = activeTab === item.id;
+    const isActive = currentPage === item.id;
 
     return (
       <motion.button
-        onClick={() => setActiveTab(item.id)}
+        onClick={() => setCurrentPage(item.id)}
         className={`relative w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-colors ${
           isActive ? 'text-primary' : 'text-muted-foreground hover:text-foreground hover:bg-muted'
         }`}
@@ -44,7 +42,7 @@ export const DesktopSidebar = () => {
           />
         )}
         <Icon size={22} className="relative z-10" strokeWidth={isActive ? 2.5 : 2} />
-        <span className={`relative z-10 font-semibold`}>{item.label}</span>
+        <span className="relative z-10 font-semibold">{item.label}</span>
       </motion.button>
     );
   };
@@ -122,6 +120,7 @@ export const DesktopSidebar = () => {
           <motion.button
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
+            onClick={() => setCurrentPage('home')}
             className="mt-3 w-full bg-primary text-primary-foreground py-2 px-4 rounded-xl font-semibold text-sm shadow-glow"
           >
             Ver Destaques

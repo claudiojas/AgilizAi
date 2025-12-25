@@ -1,37 +1,67 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useMobileDetection } from '@/hooks/useMobileDetection';
+import { useIsMobile } from '@/hooks/useIsMobile';
+import { useNavigationStore } from '@/store/navigationStore';
 import { PageWrapper } from '@/components/layout/PageWrapper';
 import { SpinningPlateMenu } from '@/components/features/SpinningPlateMenu';
 import { ProductCard } from '@/components/features/ProductCard';
 import { MobileHeader } from '@/components/features/MobileHeader';
 import { DesktopHeader } from '@/components/features/DesktopHeader';
 import { CategoryTabs } from '@/components/features/CategoryTabs';
+import { SearchPage } from '@/components/features/SearchPage';
+import { OrdersPage } from '@/components/features/OrdersPage';
+import { ProfilePage } from '@/components/features/ProfilePage';
 import { getProductsByCategory } from '@/data/products';
 import { Sparkles } from 'lucide-react';
 
 const Index = () => {
   const [selectedCategory, setSelectedCategory] = useState('burgers');
-  const { isMobile, isTablet } = useMobileDetection();
+  const { isMobile, isTablet } = useIsMobile();
+  const { currentPage } = useNavigationStore();
   const showMobileLayout = isMobile || isTablet;
 
   const products = getProductsByCategory(selectedCategory);
 
+  // Render the appropriate page based on navigation
+  const renderContent = () => {
+    switch (currentPage) {
+      case 'search':
+        return <SearchPage />;
+      case 'orders':
+        return <OrdersPage />;
+      case 'profile':
+        return <ProfilePage />;
+      case 'home':
+      default:
+        return showMobileLayout ? (
+          <MobileLayout
+            selectedCategory={selectedCategory}
+            setSelectedCategory={setSelectedCategory}
+            products={products}
+          />
+        ) : (
+          <DesktopLayout
+            selectedCategory={selectedCategory}
+            setSelectedCategory={setSelectedCategory}
+            products={products}
+          />
+        );
+    }
+  };
+
   return (
     <PageWrapper>
-      {showMobileLayout ? (
-        <MobileLayout
-          selectedCategory={selectedCategory}
-          setSelectedCategory={setSelectedCategory}
-          products={products}
-        />
-      ) : (
-        <DesktopLayout
-          selectedCategory={selectedCategory}
-          setSelectedCategory={setSelectedCategory}
-          products={products}
-        />
-      )}
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={currentPage}
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0, x: -20 }}
+          transition={{ duration: 0.2 }}
+        >
+          {renderContent()}
+        </motion.div>
+      </AnimatePresence>
     </PageWrapper>
   );
 };
