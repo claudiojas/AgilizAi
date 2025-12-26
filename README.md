@@ -1,73 +1,68 @@
-# Welcome to your Lovable project
+# AgilizAI 🍽️
 
-## Project info
+Bem-vindo ao AgilizAI, um moderno sistema de e-commerce para restaurantes e serviços de alimentação. Este projeto foi desenvolvido para oferecer uma experiência de usuário fluida e responsiva, permitindo que os clientes naveguem pelo cardápio, montem seus pedidos e gerenciem suas contas de forma intuitiva.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+## ✨ Features
 
-## How can I edit this code?
+*   **Interface Responsiva:** Layouts otimizados para desktop e dispositivos móveis.
+*   **Navegação por Categorias:** Sistema de abas e um inovador menu circular (`SpinningPlateMenu`) para explorar as categorias de pratos.
+*   **Cardápio Dinâmico:** Visualização de produtos em formato de grade com cartões detalhados.
+*   **Carrinho de Compras Persistente:** O carrinho de compras salva o estado no navegador, mantendo os itens mesmo que a página seja recarregada.
+*   **Animações Modernas:** Uso de `framer-motion` para transições e animações suaves que melhoram a experiência do usuário.
+*   **Páginas Dedicadas:** Seções para busca de produtos, histórico de pedidos e gerenciamento de perfil.
 
-There are several ways of editing your application.
+## 🚀 Tecnologias Utilizadas
 
-**Use Lovable**
+Este projeto foi construído com um conjunto de tecnologias modernas para garantir performance e escalabilidade:
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+*   **Framework Frontend:** [React](https://react.dev/) com [TypeScript](https://www.typescriptlang.org/)
+*   **Build Tool:** [Vite](https://vitejs.dev/)
+*   **Estilização:** [Tailwind CSS](https://tailwindcss.com/)
+*   **Componentes UI:** [shadcn/ui](https://ui.shadcn.com/)
+*   **Gerenciamento de Estado:** [Zustand](https://github.com/pmndrs/zustand)
+*   **Roteamento:** [React Router](https://reactrouter.com/)
+*   **Animações:** [Framer Motion](https://www.framer.com/motion/)
 
-Changes made via Lovable will be committed automatically to this repo.
+## 🏁 Como Começar
 
-**Use your preferred IDE**
+Para executar este projeto localmente, siga os passos abaixo. É necessário ter o [Node.js](https://nodejs.org/) (versão 18 ou superior) e o [npm](https://www.npmjs.com/) ou [Bun](https://bun.sh/) instalados.
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+1.  **Clone o repositório:**
+    ```bash
+    git clone <URL_DO_SEU_REPOSITORIO>
+    cd AgilizAI
+    ```
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+2.  **Instale as dependências:**
+    ```bash
+    npm install
+    # ou
+    bun install
+    ```
 
-Follow these steps:
+3.  **Inicie o servidor de desenvolvimento:**
+    ```bash
+    npm run dev
+    # ou
+    bun dev
+    ```
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+    A aplicação estará disponível em `http://localhost:8080`.
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+## 📂 Estrutura do Projeto
 
-# Step 3: Install the necessary dependencies.
-npm i
+O código-fonte está organizado na pasta `src/` da seguinte forma:
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+```
+src/
+├── components/       # Componentes de UI reutilizáveis (shadcn/ui e layout)
+│   ├── features/     # Componentes complexos que representam funcionalidades
+│   ├── layout/       # Componentes de estrutura da página (ex: PageWrapper)
+│   └── ui/           # Componentes base da UI (botões, inputs, etc.)
+├── data/             # Dados mockados da aplicação (ex: produtos)
+├── hooks/            # Hooks customizados para lógica reutilizável
+├── lib/              # Funções utilitárias
+├── pages/            # Componentes que representam as páginas da aplicação
+└── store/            # Lojas de estado global (Zustand)
 ```
 
-**Edit a file directly in GitHub**
-
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
