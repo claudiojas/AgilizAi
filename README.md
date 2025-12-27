@@ -23,8 +23,8 @@ O AgilizAI é projetado como uma plataforma modular com as seguintes caracterís
 *   **AgilizAI Admin (`userAdminFront`):**
     *   **Painel Administrativo:** Interface para gerenciamento geral da plataforma, usuários e lojistas. (Planejado)
 
-*   **AgilizAI Institucional (`institutional`):**
-    *   **Website Corporativo:** Página para informações da empresa, contato e marketing. (Planejado)
+*   **AgilizAI Institucional (`agilizai-institucional`):**
+    *   **Website Corporativo:** Landing page para informações do produto, captura de leads e onboarding de clientes através de uma página de cadastro. (Em desenvolvimento avançado)
 
 ## 🚀 Tecnologias Utilizadas
 
@@ -48,9 +48,10 @@ O projeto AgilizAI é construído com um conjunto de tecnologias modernas, distr
 *   **Framework Backend:** [Fastify](https://www.fastify.io/) (previsto)
 *   **Linguagem:** [TypeScript](https://www.typescriptlang.org/) (previsto)
 
-### AgilizAI Admin (`userAdminFront`) e AgilizAI Institucional (`institutional`)
-*   **Framework Frontend:** [React](https://react.dev/) com [TypeScript](https://www.typescriptlang.org/) (boilerplate)
-*   **Build Tool:** [Vite](https://vitejs.dev/) (boilerplate)
+### AgilizAI Admin (`userAdminFront`) e AgilizAI Institucional (`agilizai-institucional`)
+*   **Framework Frontend:** [React](https://react.dev/) com [TypeScript](https://www.typescriptlang.org/) (em desenvolvimento)
+*   **Build Tool:** [Vite](https://vitejs.dev/)
+*   **Componentes UI:** [shadcn/ui](https://ui.shadcn.com/) (no `agilizai-institucional`)
 
 ## 🏁 Como Começar
 
@@ -120,7 +121,7 @@ O repositório AgilizAI é um monorepo composto por várias aplicações e servi
 
 ```
 .
-├── institutional/      # Aplicação frontend para o site institucional ou de marketing (React/Vite). Atualmente boilerplate.
+├── agilizai-institucional/ # Aplicação frontend para o site institucional e onboarding de clientes (React/Vite). Em desenvolvimento avançado.
 ├── paymentSever/       # Serviço de backend para processamento de pagamentos (Node.js/TypeScript). Status: Em análise.
 ├── shopkeeperServer/   # Serviço de backend para gestão de lojistas/restaurantes (Node.js/TypeScript). Em estágio inicial (Fastify/Prisma).
 ├── userAdminFront/     # Aplicação frontend para painel administrativo (React/Vite). Atualmente boilerplate.
@@ -128,5 +129,5 @@ O repositório AgilizAI é um monorepo composto por várias aplicações e servi
 └── README.md           # Este arquivo.
 ```
 
-Detalhes sobre a estrutura interna de cada subprojeto podem ser encontrados em seus respectivos `README.md` (se existirem) ou diretamente em seus diretórios.
+Detalhes sobre a estrutura interna de cada subprojeto podem ser encontrados em seus respectivos `README.md` ou `README_INSTITUCIONAL.md`.
 
