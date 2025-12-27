@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 import { Rocket } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -14,10 +15,12 @@ export function MobileBottomBar() {
         variant="cta"
         size="xl"
         className="w-full gap-3 text-base"
-        onClick={() => window.open("#signup", "_self")}
+        asChild
       >
-        <Rocket className="h-5 w-5" />
-        Quero meu Cardápio Grátis
+        <Link to="/signup">
+          <Rocket className="h-5 w-5" />
+          Quero meu Cardápio Grátis
+        </Link>
       </Button>
     </motion.div>
   );

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { Menu, X, Rocket, ArrowRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -24,7 +25,7 @@ export function Header() {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16 md:h-20">
           {/* Logo */}
-          <a href="#" className="flex items-center gap-2 group">
+          <a href="/" className="flex items-center gap-2 group">
             <motion.img
               src={logo}
               alt="AgilizAI Logo"
@@ -54,10 +55,10 @@ export function Header() {
           {/* Desktop CTA */}
           <div className="hidden md:flex items-center gap-4">
             <Button variant="cta" size="default" className="gap-2 group" asChild>
-              <a href="#signup">
+              <Link to="/signup">
                 Quero meu Cardápio Grátis
                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-              </a>
+              </Link>
             </Button>
           </div>
 
@@ -74,14 +75,16 @@ export function Header() {
                 <SheetTitle className="sr-only">Menu de navegação</SheetTitle>
                 <div className="flex flex-col gap-8 mt-8">
                   <div className="flex items-center gap-2">
-                    <img
-                      src={logo}
-                      alt="AgilizAI"
-                      className="h-10 w-10 object-contain"
-                    />
-                    <span className="text-xl font-bold">
-                      Agiliz<span className="text-primary">AI</span>
-                    </span>
+                    <a href="/" onClick={() => setIsOpen(false)} className="flex items-center gap-2">
+                      <img
+                        src={logo}
+                        alt="AgilizAI"
+                        className="h-10 w-10 object-contain"
+                      />
+                      <span className="text-xl font-bold">
+                        Agiliz<span className="text-primary">AI</span>
+                      </span>
+                    </a>
                   </div>
 
                   <nav className="flex flex-col gap-4">
@@ -98,10 +101,10 @@ export function Header() {
                   </nav>
 
                   <Button variant="cta" size="touch" className="w-full gap-2" asChild>
-                    <a href="#signup" onClick={() => setIsOpen(false)}>
+                    <Link to="/signup" onClick={() => setIsOpen(false)}>
                       <Rocket className="h-5 w-5" />
                       Quero meu Cardápio Grátis
-                    </a>
+                    </Link>
                   </Button>
 
                 </div>

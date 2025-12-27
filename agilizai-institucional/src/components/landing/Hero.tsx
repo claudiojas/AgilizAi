@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 import { Rocket, Sparkles, ChefHat, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import logo from "@/assets/logo-agilizai.png";
@@ -81,10 +82,12 @@ export function Hero() {
 
             {/* CTAs */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
-              <Button variant="cta" size="xl" className="gap-3 group">
-                <Rocket className="h-5 w-5 group-hover:animate-bounce" />
-                Quero meu Cardápio Grátis
-                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+              <Button variant="cta" size="xl" className="gap-3 group" asChild>
+                <Link to="/signup">
+                  <Rocket className="h-5 w-5 group-hover:animate-bounce" />
+                  Quero meu Cardápio Grátis
+                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                </Link>
               </Button>
               <Button variant="hero" size="xl" className="gap-2">
                 <ChefHat className="h-5 w-5" />
