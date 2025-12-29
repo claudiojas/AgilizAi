@@ -1,0 +1,191 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700;800&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+@layer base {
+  :root {
+    /* Brand Colors - AgilizAI */
+    --background: 0 0% 98%;
+    --foreground: 215 25% 15%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 215 25% 15%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 215 25% 15%;
+
+    /* Pepperoni Red */
+    --primary: 0 84% 60%;
+    --primary-foreground: 0 0% 100%;
+
+    /* Cheese Orange */
+    --secondary: 38 92% 50%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 210 20% 96%;
+    --muted-foreground: 215 16% 47%;
+
+    --accent: 38 92% 95%;
+    --accent-foreground: 38 92% 35%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 214 20% 90%;
+    --input: 214 20% 90%;
+    --ring: 0 84% 60%;
+
+    --radius: 0.75rem;
+
+    /* Status Colors */
+    --status-pending: 45 93% 47%;
+    --status-pending-foreground: 45 93% 20%;
+    --status-preparing: 217 91% 60%;
+    --status-preparing-foreground: 0 0% 100%;
+    --status-ready: 142 71% 45%;
+    --status-ready-foreground: 0 0% 100%;
+    --status-delivered: 215 16% 47%;
+    --status-delivered-foreground: 0 0% 100%;
+    --status-canceled: 0 84% 60%;
+    --status-canceled-foreground: 0 0% 100%;
+
+    /* Store Status */
+    --store-open: 142 71% 45%;
+    --store-closed: 215 16% 47%;
+
+    /* Sidebar */
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 215 25% 15%;
+    --sidebar-primary: 0 84% 60%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 0 84% 97%;
+    --sidebar-accent-foreground: 0 84% 45%;
+    --sidebar-border: 214 20% 92%;
+    --sidebar-ring: 0 84% 60%;
+
+    /* Custom Shadows */
+    --shadow-sm: 0 1px 2px 0 hsl(215 25% 15% / 0.05);
+    --shadow-md: 0 4px 6px -1px hsl(215 25% 15% / 0.1), 0 2px 4px -2px hsl(215 25% 15% / 0.1);
+    --shadow-lg: 0 10px 15px -3px hsl(215 25% 15% / 0.1), 0 4px 6px -4px hsl(215 25% 15% / 0.1);
+    --shadow-glow: 0 0 20px hsl(0 84% 60% / 0.2);
+  }
+
+  .dark {
+    --background: 222 47% 8%;
+    --foreground: 210 40% 98%;
+
+    --card: 222 47% 11%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222 47% 11%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 0 84% 60%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 38 92% 50%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 217 33% 17%;
+    --muted-foreground: 215 20% 65%;
+
+    --accent: 38 92% 15%;
+    --accent-foreground: 38 92% 70%;
+
+    --destructive: 0 62% 45%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 217 33% 20%;
+    --input: 217 33% 20%;
+    --ring: 0 84% 60%;
+
+    --sidebar-background: 222 47% 10%;
+    --sidebar-foreground: 210 40% 98%;
+    --sidebar-primary: 0 84% 60%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 0 84% 15%;
+    --sidebar-accent-foreground: 0 84% 70%;
+    --sidebar-border: 217 33% 17%;
+    --sidebar-ring: 0 84% 60%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Outfit', system-ui, sans-serif;
+  }
+}
+
+@layer components {
+  .touch-target {
+    @apply min-h-[44px] min-w-[44px];
+  }
+
+  .glass-card {
+    @apply bg-card/80 backdrop-blur-sm border border-border/50;
+  }
+
+  .status-badge {
+    @apply inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium;
+  }
+
+  .metric-card {
+    @apply bg-card rounded-xl p-4 border border-border shadow-sm transition-all duration-200 hover:shadow-md;
+  }
+
+  .order-card {
+    @apply bg-card rounded-xl p-4 border border-border shadow-sm transition-all duration-200 active:scale-[0.98];
+  }
+
+  .nav-item {
+    @apply flex flex-col items-center justify-center gap-1 px-3 py-2 rounded-lg transition-colors duration-200;
+  }
+
+  .nav-item-active {
+    @apply bg-primary/10 text-primary;
+  }
+
+  .kanban-column {
+    @apply flex flex-col gap-3 p-3 bg-muted/50 rounded-xl min-h-[200px];
+  }
+}
+
+@layer utilities {
+  .animate-pulse-slow {
+    animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  .animate-slide-up {
+    animation: slideUp 0.3s ease-out;
+  }
+
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}
