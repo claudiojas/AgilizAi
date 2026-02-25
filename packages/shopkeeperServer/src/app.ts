@@ -8,13 +8,19 @@ export class App {
     PORT: number;
     constructor() {
         this.app = fastify()
-        this.PORT = process.env.PORT ? Number(process.env.PORT) : 3000;
+        this.PORT = process.env.PORT ? Number(process.env.PORT) : 3001;
     }
 
     getServer(): FastifyInstance {
         return this.app;
     }
 
+    register() {
+        this.app.register(fastifyCors, {
+            origin: "*",
+            methods: ['POST', 'DELETE', 'GET', 'PUT', 'PATCH']
+        });
+    }
     listen() {
         this.app.listen({
             host: '0.0.0.0',
@@ -24,10 +30,4 @@ export class App {
         });
     };
 
-    register() {
-        this.app.register(fastifyCors, {
-            origin: "*",
-            methods: ['POST', 'DELETE', 'GET', 'PUT', 'PATCH']
-        });
-    }
 }
